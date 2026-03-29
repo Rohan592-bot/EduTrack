@@ -64,3 +64,7 @@ EduTrack/
 
 ```bash
 git clone https://github.com/your-username/EduTrack.git
+```
+2. Open index.html in your browser
+
+3. Upload your CSV file using the Upload CSV button
