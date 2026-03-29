@@ -85,9 +85,10 @@ function cd(extra) {
         titleColor:'#e6edf3',bodyColor:'#8b949e',
         titleFont:{family:'Sora',size:12},bodyFont:{family:'JetBrains Mono',size:11},padding:10}
     },
+    clip: false,
     scales:{
       x:{grid:{color:'rgba(33,41,58,.7)'},ticks:{color:'#484f58',font:{family:'JetBrains Mono',size:10}}},
-      y:{grid:{color:'rgba(33,41,58,.7)'},ticks:{color:'#484f58',font:{family:'JetBrains Mono',size:10}},min:0,max:4.5}
+      y:{grid:{color:'rgba(33,41,58,.7)'},ticks:{color:'#484f58',font:{family:'JetBrains Mono',size:10}},min:0,suggestedMax:4.2}
     }
   }, extra||{});
 }
@@ -364,7 +365,7 @@ function renderOverview() {
     labels:YL,
     datasets:[{label:'Class Avg',data:YK.map(k=>avg(students.map(s=>s[k]))),
       borderColor:'#e6a817',backgroundColor:'rgba(230,168,23,.06)',
-      pointBackgroundColor:'#e6a817',pointRadius:5,pointHoverRadius:7,tension:.4,fill:true,borderWidth:2}]
+      pointBackgroundColor:'#e6a817',pointRadius:5,pointHoverRadius:7,tension:.4,fill:true,borderWidth:2,clip:false}]
   },options:cd()});
 
   charts['ov-cgpa']=new Chart(document.getElementById('cv-cgpa'),{type:'bar',data:{
@@ -578,7 +579,7 @@ function openPM(id){
       labels:YL,
       datasets:[{label:`#${s.id}`,data:YK.map(k=>s[k]),
         borderColor:col,backgroundColor:col+'10',
-        pointBackgroundColor:col,pointRadius:6,pointHoverRadius:8,tension:.4,fill:true,borderWidth:2}]
+        pointBackgroundColor:col,pointRadius:6,pointHoverRadius:8,tension:.4,fill:true,borderWidth:2,clip:false}]
     },options:cd()});
   },50);
 }
@@ -660,7 +661,7 @@ function openCompareModal(){
   document.getElementById('cm-body').innerHTML=`
     <div class="panel" style="margin-bottom:12px">
       <div class="panel-head"><span class="panel-title">GPA Progression</span><span class="panel-sub">year-by-year</span></div>
-      <div class="chart-wrap" style="height:300px"><canvas id="cv-cmline"></canvas></div>
+      <div class="chart-wrap" style="height:340px"><canvas id="cv-cmline"></canvas></div>
     </div>
     <div class="panel">
       <div class="panel-head"><span class="panel-title">CGPA Ranking</span><span class="panel-sub">overall</span></div>
@@ -673,7 +674,7 @@ function openCompareModal(){
       labels:YL,
       datasets:sel.map(s=>({label:`#${s.id} (${s.prog})`,data:YK.map(k=>s[k]),
         borderColor:sc(s),backgroundColor:sc(s)+'10',
-        pointBackgroundColor:sc(s),pointRadius:5,pointHoverRadius:7,tension:.4,borderWidth:2}))
+        pointBackgroundColor:sc(s),pointRadius:5,pointHoverRadius:7,tension:.4,borderWidth:2,clip:false}))
     },options:cd()});
     const srt=[...sel].sort((a,b)=>b.cgpa-a.cgpa);
     charts['cm-bar']=new Chart(document.getElementById('cv-cmbar'),{type:'bar',data:{
