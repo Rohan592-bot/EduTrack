@@ -1,4 +1,18 @@
 // ════════════════════════════════
+//  MOBILE NAV
+// ════════════════════════════════
+function toggleNav() {
+  document.getElementById('main-nav').classList.toggle('open');
+  document.getElementById('nav-overlay').classList.toggle('open');
+  document.body.style.overflow = document.getElementById('main-nav').classList.contains('open') ? 'hidden' : '';
+}
+function closeNav() {
+  document.getElementById('main-nav').classList.remove('open');
+  document.getElementById('nav-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ════════════════════════════════
 //  STATE
 // ════════════════════════════════
 let students = [];
