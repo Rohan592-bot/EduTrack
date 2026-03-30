@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduTrack — Student Performance Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <!-- Mobile nav overlay -->
+  <div class="nav-overlay" id="nav-overlay" onclick="closeNav()"></div>
+
+  <header>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a class="logo" href="#">
+        <div class="logo-mark">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <rect x="1" y="9" width="3" height="8" rx="1" fill="currentColor" opacity=".5"/>
+            <rect x="6" y="5" width="3" height="12" rx="1" fill="currentColor" opacity=".75"/>
+            <rect x="11" y="1" width="3" height="16" rx="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <span>Edu<strong>Track</strong></span>
+      </a>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="hdr-btn" onclick="exportAllCSV()" id="btn-export-all" style="display:none" title="Export all data as CSV">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 1v7M3.5 5.5L6.5 9l3-3.5"/><path d="M1 9.5v1A1.5 1.5 0 002.5 12h8A1.5 1.5 0 0012 10.5v-1"/>
+        </svg>
+        <span class="btn-label">Export CSV</span>
+      </button>
+      <label class="upload-btn">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 1v7M3.5 3.5L6.5 1l3 2.5"/><path d="M1 9.5v1A1.5 1.5 0 002.5 12h8A1.5 1.5 0 0012 10.5v-1"/>
+        </svg>
+        <span class="btn-label">Upload CSV</span>
+        <input type="file" id="csvInput" accept=".csv"/>
+      </label>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <!-- SIDEBAR -->
+    <nav id="main-nav">
+      <button class="nav-close" onclick="closeNav()" aria-label="Close menu">
+        <svg width="12" height="12" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l8 8M9 1L1 9"/></svg>
+      </button>
+      <div class="nav-group-label">Views</div>
+      <button class="nav-item active" data-page="overview" onclick="closeNav()">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/>
+          <rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/>
+        </svg>
+        Overview
+      </button>
+      <button class="nav-item" data-page="profile" onclick="closeNav()">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.314 2.686-5 6-5s6 1.686 6 5"/>
+        </svg>
+        Student Profiles
+      </button>
+      <button class="nav-item" data-page="compare" onclick="closeNav()">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 8h10M10 5l3 3-3 3M6 5L3 8l3 3"/>
+        </svg>
+        Compare
+      </button>
+      <button class="nav-item" data-page="semester" onclick="closeNav()">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12h14M1 8h14M1 4h14"/>
+        </svg>
+        Semester Breakdown
+      </button>
+      <div class="nav-group-label" style="margin-top:8px">Data</div>
+      <button class="nav-item" data-page="table" onclick="closeNav()">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="1" width="14" height="14" rx="2"/><path d="M1 5h14M5 5v10"/>
+        </svg>
+        All Students
+      </button>
+    </nav>
+
+    <main class="content">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="page active" id="page-overview">
+        <div class="page-head">
+          <div><h1>Class Overview</h1><p>Aggregate performance, statistics, and trends across all students</p></div>
+        </div>
+        <div class="kpi-grid" id="ov-stats"></div>
+        <!-- Stats row: median, std dev, pass rate, distinction rate -->
+        <div class="stats-strip" id="ov-stats-strip"></div>
+        <div id="ov-charts"></div>
+        <!-- Most improved / most declined -->
+        <div id="ov-movers"></div>
+      </div>
+
+      <!-- ── PROFILES ── -->
+      <div class="page" id="page-profile">
+        <div class="page-head">
+          <div><h1>Student Profiles</h1><p>Click to view details · 🗑 to remove</p></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="badge-count" id="profile-search-count"></span>
+            <button class="hdr-btn" onclick="exportFilteredCSV()" id="btn-export-filtered" style="display:none">
+              <svg width="12" height="12" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6.5 1v7M3.5 5.5L6.5 9l3-3.5"/><path d="M1 9.5v1A1.5 1.5 0 002.5 12h8A1.5 1.5 0 0012 10.5v-1"/>
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+        <!-- Search -->
+        <div class="search-bar-wrap">
+          <svg class="search-bar-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5L14 14"/>
+          </svg>
+          <input class="search-bar" id="profile-search" placeholder="Search by ID, program, gender, year…" autocomplete="off" oninput="filterProfileList()"/>
+          <button class="search-bar-clear" id="profile-search-clear" onclick="clearProfileSearch()" style="display:none">
+            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l8 8M9 1L1 9"/></svg>
+          </button>
+        </div>
+        <!-- Tier filter chips -->
+        <div class="tier-filters" id="tier-filters">
+          <button class="tier-chip active" data-tier="all" onclick="setTierFilter('all')">All</button>
+          <button class="tier-chip" data-tier="distinction" onclick="setTierFilter('distinction')">
+            <span class="tier-dot" style="background:#3fb950"></span>Distinction <span class="tier-count" id="tc-distinction"></span>
+          </button>
+          <button class="tier-chip" data-tier="merit" onclick="setTierFilter('merit')">
+            <span class="tier-dot" style="background:#58a6ff"></span>Merit <span class="tier-count" id="tc-merit"></span>
+          </button>
+          <button class="tier-chip" data-tier="pass" onclick="setTierFilter('pass')">
+            <span class="tier-dot" style="background:#e6a817"></span>Pass <span class="tier-count" id="tc-pass"></span>
+          </button>
+          <button class="tier-chip" data-tier="atrisk" onclick="setTierFilter('atrisk')">
+            <span class="tier-dot" style="background:#f85149"></span>At Risk <span class="tier-count" id="tc-atrisk"></span>
+          </button>
+        </div>
+        <div class="student-list" id="profile-list"></div>
+        <div id="profile-no-results" style="display:none" class="no-results">
+          <div class="no-results-icon">⊘</div>
+          <p>No students match your search</p>
+        </div>
+      </div>
+
+      <!-- ── COMPARE ── -->
+      <div class="page" id="page-compare">
+        <div class="page-head">
+          <div><h1>Compare Students</h1><p>Search by ID, add to selection, then view charts</p></div>
+        </div>
+        <div class="search-bar-wrap" style="margin-bottom:1rem">
+          <svg class="search-bar-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5L14 14"/>
+          </svg>
+          <input class="search-bar" id="cmp-search" placeholder="Search by student ID or program…" autocomplete="off" oninput="onCmpSearch()"/>
+          <div class="cmp-dropdown" id="cmp-dropdown" style="display:none"></div>
+        </div>
+        <div id="cmp-list" class="cmp-selected-list"></div>
+        <div class="cmp-actions">
+          <button class="btn-primary" id="btn-show-cmp" onclick="openCompareModal()" disabled>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12L12 1M12 1H7M12 1V6"/>
+            </svg>
+            Show Comparison
+          </button>
+          <button class="btn-ghost" onclick="clearCompare()">Clear All</button>
+          <span id="cmp-count" class="cmp-count-label"></span>
+        </div>
+        <div class="cmp-hint" id="cmp-hint">Search and add at least 2 students to compare performance.</div>
+      </div>
+
+      <!-- ── SEMESTER ── -->
+      <div class="page" id="page-semester">
+        <div class="page-head">
+          <div><h1>Semester Breakdown</h1><p>Year-level averages, rankings, and CGPA heatmap</p></div>
+        </div>
+        <div class="sem-grid" id="sem-cards"></div>
+        <div class="panel">
+          <div class="panel-head"><span class="panel-title">CGPA Heatmap</span><span class="panel-sub">first 100 students</span></div>
+          <div id="heatmap" style="overflow-x:auto"></div>
+        </div>
+        <div id="sem-tables"></div>
+      </div>
+
+      <!-- ── TABLE ── -->
+      <div class="page" id="page-table">
+        <div class="page-head">
+          <div><h1>All Students</h1><p>Full ranked data · 50 rows per page</p></div>
+        </div>
+        <div class="panel" style="padding:0;overflow:hidden">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th><th>Student ID</th><th>Program</th><th>Gender</th>
+                  <th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th>
+                  <th>SGPA</th><th>CGPA</th><th>Tier</th><th>Trend</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="tbl-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- PROFILE MODAL -->
+  <div class="overlay" id="pm" onclick="if(event.target===this)closeModal('pm')">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title" id="pm-title"></div>
+          <div class="modal-sub" id="pm-sub"></div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="btn-ghost" style="padding:6px 12px;font-size:.75rem" onclick="printStudentReport()">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="1" width="8" height="5" rx="1"/><path d="M3 9H1.5A1.5 1.5 0 010 7.5V5a1.5 1.5 0 011.5-1.5h11A1.5 1.5 0 0114 5v2.5A1.5 1.5 0 0112.5 9H11"/>
+              <rect x="3" y="8" width="8" height="5" rx="1"/>
+            </svg>
+            Print
+          </button>
+          <button class="modal-close" onclick="closeModal('pm')">
+            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l8 8M9 1L1 9"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="pm-body"></div>
+    </div>
+  </div>
+
+  <!-- COMPARE MODAL -->
+  <div class="overlay" id="cm" onclick="if(event.target===this)closeModal('cm')">
+    <div class="modal modal-wide">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Comparison Report</div>
+          <div class="modal-sub" id="cm-sub"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal('cm')">
+          <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 1l8 8M9 1L1 9"/></svg>
+        </button>
+      </div>
+      <div id="cm-body"></div>
+    </div>
+  </div>
+
+  <!-- PRINT FRAME (invisible) -->
+  <div id="print-frame" style="display:none"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
