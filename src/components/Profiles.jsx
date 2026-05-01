@@ -60,7 +60,7 @@ const Profiles = ({ students }) => {
     const rc = s._rank === 1 ? 'rank-1' : s._rank === 2 ? 'rank-2' : s._rank === 3 ? 'rank-3' : 'rank-n';
     return (
       <div 
-        key={s.id} 
+        key={`${s.id}-${s.prog}-${s.yog}`} 
         className="s-card" 
         style={{ '--card-color': s._col }}
         onClick={() => setSelectedStudent(s)}

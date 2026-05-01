@@ -264,7 +264,7 @@ const Predictor = ({ students }) => {
             {result.similar.map((item, i) => {
               const s = item.s;
               return (
-                <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '8px 12px', background: 'var(--bg-overlay)', borderRadius: '6px' }}>
+                <div key={`${s.id}-${s.prog}-${s.yog}`} style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '8px 12px', background: 'var(--bg-overlay)', borderRadius: '6px' }}>
                   <span style={{ fontSize: '.75rem', fontWeight: 600, color: 'var(--text-md)', width: '20px' }}>{i + 1}</span>
                   <span style={{ fontFamily: 'JetBrains Mono', fontSize: '.8rem', color: 'var(--text-hi)', width: '60px' }}>#{s.id}</span>
                   <span style={{ fontFamily: 'JetBrains Mono', fontSize: '.75rem', color: 'var(--text-lo)', flex: 1 }}>

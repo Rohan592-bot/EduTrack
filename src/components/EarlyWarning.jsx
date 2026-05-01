@@ -220,7 +220,7 @@ const EarlyWarning = ({ students }) => {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
               {flagged.map(s => (
-                <div key={s.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: 'var(--bg-overlay)', borderLeft: '3px solid var(--red)', borderRadius: '4px' }}>
+                <div key={`${s.id}-${s.prog}-${s.yog}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: 'var(--bg-overlay)', borderLeft: '3px solid var(--red)', borderRadius: '4px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                      <span style={{ fontFamily: 'JetBrains Mono', fontSize: '.85rem', fontWeight: 600, color: 'var(--text-hi)' }}>#{s.id}</span>
                      <span style={{ fontSize: '.7rem', color: 'var(--text-lo)' }}>{s.prog} | L100: <span style={{ color: 'var(--text-md)'}}>{s.CGPA100.toFixed(2)}</span></span>

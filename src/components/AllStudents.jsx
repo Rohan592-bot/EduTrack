@@ -87,7 +87,7 @@ const AllStudents = ({ students, onDelete }) => {
                 const rc = g === 0 ? 'rank-1' : g === 1 ? 'rank-2' : g === 2 ? 'rank-3' : 'rank-n';
                 const tier = getTier(s.cgpa);
                 return (
-                  <tr key={s.id}>
+                  <tr key={`${s.id}-${s.prog}-${s.yog}`}>
                     <td><span className={`rank ${rc}`}>{g + 1}</span></td>
                     <td className="hi">#{s.id}</td>
                     <td><span className="pill pill-prog">{s.prog}</span></td>

@@ -153,7 +153,7 @@ const Compare = ({ students }) => {
               {searchHits.map(s => {
                 const added = cmpSel.includes(s.id);
                 return (
-                  <div key={s.id} className={`cmp-di ${added ? 'added' : ''}`} onClick={() => toggleCmp(s.id)}>
+                  <div key={`${s.id}-${s.prog}-${s.yog}`} className={`cmp-di ${added ? 'added' : ''}`} onClick={() => toggleCmp(s.id)}>
                     <span>
                       <span style={{ color: s._col, marginRight: '6px' }}>●</span>#{s.id}
                       <span style={{ color: 'var(--text-lo)', marginLeft: '6px', fontSize: '.7rem' }}>
@@ -172,7 +172,7 @@ const Compare = ({ students }) => {
 
         <div className="cmp-selected-wrap" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px', minHeight: '44px' }}>
           {selectedStudents.map(s => (
-             <div key={s.id} className="cmp-chip">
+             <div key={`${s.id}-${s.prog}-${s.yog}`} className="cmp-chip">
                <div className="cmp-chip-l">
                  <div className="cmp-dot" style={{ background: s._col }}></div>
                  <div>
@@ -205,7 +205,7 @@ const Compare = ({ students }) => {
                   <Tooltip content={<CustomTooltip />} />
                   {selectedStudents.map(s => (
                     <Line 
-                      key={s.id}
+                      key={`${s.id}-${s.prog}-${s.yog}`}
                       type="monotone" 
                       dataKey={`#${s.id}`} 
                       name={`#${s.id} (${s.prog})`} 

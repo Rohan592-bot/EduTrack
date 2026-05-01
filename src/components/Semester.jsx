@@ -93,7 +93,7 @@ const Semester = ({ students }) => {
             </thead>
             <tbody>
               {hmStudents.map(s => (
-                <tr key={s.id}>
+                <tr key={`${s.id}-${s.prog}-${s.yog}`}>
                   <td style={{ padding: '6px 13px', color: 'var(--text-md)', borderBottom: '1px solid var(--border)' }}>#{s.id}</td>
                   {LK.map(k => {
                     const v = s[k];
@@ -140,7 +140,7 @@ const Semester = ({ students }) => {
                      const rc = ri === 0 ? 'rank-1' : ri === 1 ? 'rank-2' : ri === 2 ? 'rank-3' : 'rank-n';
                      const tier = getTier(s.cgpa);
                      return (
-                        <tr key={s.id}>
+                        <tr key={`${s.id}-${s.prog}-${s.yog}`}>
                           <td><span className={`rank ${rc}`}>{ri + 1}</span></td>
                           <td className="hi">#{s.id}</td>
                           <td><span className="pill pill-prog">{s.prog}</span></td>
