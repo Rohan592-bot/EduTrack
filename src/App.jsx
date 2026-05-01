@@ -2,6 +2,7 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import Papa from 'papaparse';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { Analytics } from '@vercel/analytics/react';
 
 const Overview = lazy(() => import('./components/Overview'));
 const Profiles = lazy(() => import('./components/Profiles'));
@@ -294,6 +295,7 @@ function App() {
           />
         </Suspense>
       )}
+      <Analytics />
     </>
   );
 }
