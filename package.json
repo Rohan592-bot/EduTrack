@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.48.0",
+    "@vercel/analytics": "^2.0.1",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
     "lucide-react": "^1.7.0",
