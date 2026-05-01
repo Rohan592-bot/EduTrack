@@ -66,38 +66,120 @@ const ProfileModal = ({ selectedStudent, onClose, allStudentsLength, geminiKey }
       // We will generate the report locally using a heuristic "AI" rule-based system
       // This eliminates API keys, rate limits, network delays, and external dependencies.
       
-      const { id, prog, gender, cgpa, CGPA100, CGPA200, CGPA300, CGPA400, SGPA } = selectedStudent;
+      const { id, prog, cgpa, CGPA100, CGPA200, CGPA300, CGPA400, SGPA } = selectedStudent;
       
-      // Determine trend
-      let trendLabel = "relatively stable";
+      // Create a deterministic hash from the student ID so the report is consistently unique per student
+      let numId = 0;
+      for (let i = 0; i < String(id).length; i++) numId += String(id).charCodeAt(i);
+
+      // Trend Variations
+      const trendLabelsStable = ["nice and stable", "wonderfully consistent", "steady and reliable"];
+      const trendLabelsHighUp = ["showing fantastic upward improvement", "making massive strides", "soaring in their recent terms"];
+      const trendLabelsSlightUp = ["showing a steady upward trend", "progressing bit by bit", "demonstrating a gradual, positive lift"];
+      const trendLabelsSlightDown = ["experiencing a slight downward trend", "showing a minor slip recently", "navigating a brief plateau"];
+      const trendLabelsHighDown = ["going through a bit of a tricky period recently", "facing some recent challenges", "experiencing a noticeable dip in scores"];
+
+      let trendLabel = trendLabelsStable[numId % 3];
       const diff = CGPA400 - CGPA100;
-      if (diff > 0.5) trendLabel = "showing significant upward improvement";
-      else if (diff > 0.1) trendLabel = "showing a slight upward trend";
-      else if (diff < -0.5) trendLabel = "experiencing a significant downward decline";
-      else if (diff < -0.1) trendLabel = "experiencing a slight downward trend";
+      if (diff > 0.5) trendLabel = trendLabelsHighUp[numId % 3];
+      else if (diff > 0.1) trendLabel = trendLabelsSlightUp[numId % 3];
+      else if (diff < -0.5) trendLabel = trendLabelsHighDown[numId % 3];
+      else if (diff < -0.1) trendLabel = trendLabelsSlightDown[numId % 3];
 
-      // Paragraph 1: Summary
-      let p1 = `Student #${id} enrolled in the ${prog} program brings a cumulative GPA of ${cgpa.toFixed(2)}, categorizing their overall foundational performance as ${cgpa >= 3.0 ? 'strong' : cgpa >= 2.0 ? 'adequate' : 'requiring immediate academic intervention'}. As a ${gender.toLowerCase()} student, they have navigated the coursework with a demonstrated level of engagement, culminating in a recent SGPA of ${SGPA.toFixed(2)}.`;
+      // Paragraph 1: Summary Variations
+      const greetings = [
+        `This report provides an academic overview for Student #${id}, currently enrolled in the ${prog} program.`,
+        `Automated Progress Summary: Student #${id} - ${prog} Program.`,
+        `Academic update generated on behalf of Student #${id} (${prog} program).`,
+        `Periodic performance review for Student #${id} within the ${prog} program.`
+      ];
+      
+      const strongPerf = ['impressively strong', 'yielding notable results', 'setting an excellent benchmark', 'exceeding foundational expectations'];
+      const adequatePerf = ['on track and adequate', 'progressing steadily along the curriculum', 'meeting programmatic standards', 'showing solid, reliable effort'];
+      const supportPerf = ['an area requiring targeted intervention', 'an area indicating a need for supplementary support', 'in need of a structured academic plan', 'requiring reinforcement of core fundamentals'];
+      
+      const perfStr = cgpa >= 3.0 ? strongPerf[numId % 4] : cgpa >= 2.0 ? adequatePerf[numId % 4] : supportPerf[numId % 4];
 
-      // Paragraph 2: Trend
-      let p2 = `A deeper analysis into their year-to-year progression reveals a trajectory that is ${trendLabel}. They began their L100 year with a GPA of ${CGPA100.toFixed(2)} and progressed to an L400 GPA of ${CGPA400.toFixed(2)}. `;
+      const engagements = [
+        `Classroom engagement remains recorded at a high level, culminating in a recent SGPA of ${SGPA.toFixed(2)}.`,
+        `Coursework participation has been steady, establishing a recent SGPA of ${SGPA.toFixed(2)}.`,
+        `Recent effort metrics indicate consistent focus, reflected in the current SGPA of ${SGPA.toFixed(2)}.`,
+        `Assignment completion and general participation yield a recent SGPA standing of ${SGPA.toFixed(2)}.`
+      ];
+
+      let p1 = `${greetings[numId % 4]}\n\nThe student currently holds a cumulative GPA of ${cgpa.toFixed(2)}, indicating an overall foundational performance that is ${perfStr}. ${engagements[(numId + 1) % 4]}`;
+
+      // Paragraph 2: Trend Variations
+      const trendIntros = [
+        `An analysis of year-to-year progress reveals a trajectory that is ${trendLabel}.`,
+        `Historical grade tracking shows that the overall progression path has been ${trendLabel}.`,
+        `Longitudinal data indicates a continuous performance trend that is ${trendLabel}.`
+      ];
+
+      const drops = [
+        `Metrics show a decrease in performance from the L300 year (${CGPA300.toFixed(2)}) to the L400 year (${CGPA400.toFixed(2)}), suggesting an adjustment period.`,
+        `Data indicates a slight score reduction between the L300 (${CGPA300.toFixed(2)}) and L400 (${CGPA400.toFixed(2)}) levels.`,
+        `A minor drop is noted from the previous year (${CGPA300.toFixed(2)}) compared to current standing (${CGPA400.toFixed(2)}).`
+      ];
+
+      const increases = [
+        `Positive momentum is evident between the L300 year (${CGPA300.toFixed(2)}) and the final L400 year.`,
+        `An upward trend is clearly marked from previous L300 standing (${CGPA300.toFixed(2)}) to the current L400 level.`,
+        `Scores demonstrate steady growth, rising from a ${CGPA300.toFixed(2)} to a ${CGPA400.toFixed(2)} in the L400 year.`
+      ];
+
+      const consistencies = [
+        `Performance metrics remain broadly consistent across upper-level courses.`,
+        `Data shows steady and reliable task completion across advanced curriculum classes.`,
+        `Grades have maintained an even level throughout the more rigorous parts of the program.`
+      ];
+
+      let p2 = `${trendIntros[(numId + 2) % 3]} The student commenced their L100 year with a GPA of ${CGPA100.toFixed(2)} and has progressed to an L400 GPA of ${CGPA400.toFixed(2)}. `;
+      
       if (CGPA400 < CGPA300) {
-        p2 += `However, it is notable that there was a recent drop in performance from their L300 year (${CGPA300.toFixed(2)}) to their L400 year (${CGPA400.toFixed(2)}).`;
+        p2 += drops[(numId + 3) % 3];
       } else if (CGPA400 > CGPA300) {
-        p2 += `It is encouraging to note the positive momentum observed between their L300 year (${CGPA300.toFixed(2)}) and their final L400 year standing.`;
+        p2 += increases[(numId + 3) % 3];
       } else {
-        p2 += `Their upper-level courses demonstrated remarkable consistency.`;
+        p2 += consistencies[(numId + 3) % 3];
       }
 
-      // Paragraph 3: Recommendations
-      let p3 = `Based on these metrics, instructors should `;
-      if (cgpa >= 3.5) {
-        p3 += `focus on providing advanced enrichment opportunities and career mentorship. This student is highly capable and would benefit from challenging capstone projects or research assistantships to maximize their potential.`;
-      } else if (cgpa >= 2.5) {
-        p3 += `continue with standard instructional support but routinely check in during challenging mid-semester weeks. Encouraging active participation in study groups could help elevate their standing into the higher percentile.`;
-      } else {
-        p3 += `intervene with mandatory academic counseling and structured remediation plans. It is critical to identify the root causes of their academic hurdles to ensure they successfully meet graduation thresholds.`;
-      }
+      // Paragraph 3: Recommendations Variations
+      const recIntros = [
+        `Based on this profile, recommended next steps include`,
+        `Strategic planning for the upcoming reporting period should focus on`,
+        `To maximize academic outcomes, it is advised to`,
+        `Suggested actionable items are to`
+      ];
+
+      const recHighs = [
+        `providing advanced enrichment opportunities and career mentorship to utilize the student's high capability. Assigning challenging capstone projects is heavily recommended.`,
+        `offering deeper challenges that cater to demonstrated skills. Exploring leadership roles or specialized independent studies is advised.`,
+        `connecting the student with high-level enrichment programs and networking events to reward sustained high performance.`
+      ];
+
+      const recMids = [
+        `continuing the provision of standard instructional support alongside regular check-ins during mid-semester intervals. Participation in study groups may yield higher standing.`,
+        `maintaining current supportive systems and encouraging peer tutoring. A collaborative learning setting is recommended for incremental growth.`,
+        `upholding steady foundational assistance while advising routine attendance at scheduled office hours.`
+      ];
+
+      const recLows = [
+        `implementing structured academic counseling and a tailored support plan to overcome current scholastic hurdles.`,
+        `instituting a formal intervention strategy coordinated by academic advisors to ensure graduation thresholds are met safely.`,
+        `scheduling targeted diagnostic sessions to pinpoint knowledge gaps and wrapping the student in supportive collegiate resources.`
+      ];
+
+      let recBody = cgpa >= 3.5 ? recHighs[(numId + 5) % 3] : cgpa >= 2.5 ? recMids[(numId + 5) % 3] : recLows[(numId + 5) % 3];
+      
+      const closings = [
+        `\n\n--- Report Generated Automatically by EduTrack ---`,
+        `\n\n--- End of EduTrack Academic Summary ---`,
+        `\n\n--- Processed via EduTrack Analytics ---`,
+        `\n\n--- EduTrack Automated Assessment Complete ---`
+      ];
+
+      let p3 = `${recIntros[(numId + 4) % 4]} ${recBody}${closings[(numId + 6) % 4]}`;
 
       // Simulate a small "AI thinking" delay to keep the user experience feeling smart
       setTimeout(() => {
